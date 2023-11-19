@@ -126,6 +126,11 @@ fn parse(file_name: &String) -> (File, Option<String>) {
             Some(format!("cw: {}: Is a directory", file_name)),
         )
     } else {
+        let mut newlines = 0;
+        let mut words = 0;
+        let mut bytes = 0;
+        let mut in_word = false;
+
         match fs::read_to_string(file_name) {
             Err(_) => (
                 File {
@@ -136,15 +141,36 @@ fn parse(file_name: &String) -> (File, Option<String>) {
                 },
                 Some(format!("cw: {}: No such file or directory", file_name)),
             ),
-            Ok(f) => (
-                File {
-                    name: file_name.to_string(),
-                    newlines: count_newlines(&f),
-                    words: count_words(&f),
-                    bytes: count_bytes(&f),
-                },
-                None,
-            ),
+            Ok(content) => {
+                for b in content.bytes() {
+                    bytes += 1;
+
+                    if b == b'\n' {
+                        newlines += 1;
+                    }
+
+                    if !in_word {
+                        if !b.is_ascii_whitespace() {
+                            in_word = true;
+                        }
+                    } else {
+                        if b.is_ascii_whitespace() {
+                            in_word = false;
+                            words += 1;
+                        }
+                    }
+                }
+
+                (
+                    File {
+                        name: file_name.to_string(),
+                        newlines,
+                        words,
+                        bytes,
+                    },
+                    None,
+                )
+            }
         }
     }
 }
