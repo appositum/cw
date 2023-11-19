@@ -61,7 +61,8 @@ fn main() {
             total_bytes += file.bytes;
 
             (file, result)
-        }).collect();
+        })
+        .collect();
 
     let max_width = if total_bytes > 0 {
         total_bytes.ilog10() + 1
@@ -77,7 +78,7 @@ fn main() {
         }
 
         println!(
-            "{:>w$} {:>w$} {:>w$} {:>w$}",
+            "{:>w$} {:>w$} {:>w$} {}",
             file.newlines,
             file.words,
             file.bytes,
