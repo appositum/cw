@@ -32,7 +32,7 @@ pub mod count {
         let path = Path::new(file_name);
 
         if path.is_dir() {
-            (
+            return (
                 File {
                     name: file_name.to_string(),
                     newlines: 0,
@@ -40,53 +40,53 @@ pub mod count {
                     bytes: 0,
                 },
                 Some(format!("cw: {}: Is a directory", file_name)),
-            )
-        } else {
-            let mut newlines = 0;
-            let mut words = 0;
-            let mut bytes = 0;
-            let mut in_word = false;
+            );
+        }
 
-            match fs::read_to_string(file_name) {
-                Err(_) => (
-                    File {
-                        name: file_name.to_string(),
-                        newlines: 0,
-                        words: 0,
-                        bytes: 0,
-                    },
-                    Some(format!("cw: {}: No such file or directory", file_name)),
-                ),
-                Ok(content) => {
-                    for b in content.bytes() {
-                        bytes += 1;
+        let mut newlines = 0;
+        let mut words = 0;
+        let mut bytes = 0;
+        let mut in_word = false;
 
-                        if b == b'\n' {
-                            newlines += 1;
-                        }
+        match fs::read_to_string(file_name) {
+            Err(_) => (
+                File {
+                    name: file_name.to_string(),
+                    newlines: 0,
+                    words: 0,
+                    bytes: 0,
+                },
+                Some(format!("cw: {}: No such file or directory", file_name)),
+            ),
+            Ok(content) => {
+                for b in content.bytes() {
+                    bytes += 1;
 
-                        if !in_word {
-                            if !b.is_ascii_whitespace() {
-                                in_word = true;
-                            }
-                        } else {
-                            if b.is_ascii_whitespace() {
-                                in_word = false;
-                                words += 1;
-                            }
-                        }
+                    if b == b'\n' {
+                        newlines += 1;
                     }
 
-                    (
-                        File {
-                            name: file_name.to_string(),
-                            newlines,
-                            words,
-                            bytes,
-                        },
-                        None,
-                    )
+                    if !in_word {
+                        if !b.is_ascii_whitespace() {
+                            in_word = true;
+                        }
+                    } else {
+                        if b.is_ascii_whitespace() {
+                            in_word = false;
+                            words += 1;
+                        }
+                    }
                 }
+
+                (
+                    File {
+                        name: file_name.to_string(),
+                        newlines,
+                        words,
+                        bytes,
+                    },
+                    None,
+                )
             }
         }
     }
