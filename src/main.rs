@@ -26,13 +26,14 @@ fn main() {
 
         // `x.ilog10() + 1` == number of digits in `x`
         println!(
-            "{:>w$} {:>w$} {:>w$} {:>w$}",
+            "{:>w$} {:>w$} {:>w$} {}",
             file.newlines,
             file.words,
             file.bytes,
             file.name,
             w = max_width as usize
         );
+
         return;
     }
 
