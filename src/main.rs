@@ -63,10 +63,11 @@ fn main() {
             (file, result)
         }).collect();
 
-    let max_width = files.iter().max_by_key(|f| {
-        let (file, _res) = f;
-        file.bytes
-    }).unwrap().0.bytes;
+    let max_width = if total_bytes > 0 {
+        total_bytes.ilog10() + 1
+    } else {
+        1
+    };
 
     for f in files {
         let (file, result) = f;
@@ -81,7 +82,7 @@ fn main() {
             file.words,
             file.bytes,
             file.name,
-            w = (max_width.ilog10() + 1) as usize
+            w = max_width as usize
         );
     }
 
@@ -90,7 +91,7 @@ fn main() {
         total_newlines,
         total_words,
         total_bytes,
-        w = (max_width.ilog10() + 1) as usize
+        w = max_width as usize
     );
 }
 
