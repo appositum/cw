@@ -46,7 +46,6 @@ pub mod count {
         let mut newlines = 0;
         let mut words = 0;
         let mut bytes = 0;
-        let mut in_word = false;
 
         match fs::read_to_string(file_name) {
             Err(_) => (
@@ -59,6 +58,8 @@ pub mod count {
                 Some(format!("cw: {}: No such file or directory", file_name)),
             ),
             Ok(content) => {
+                let mut in_word = false;
+
                 for b in content.bytes() {
                     bytes += 1;
 
@@ -77,6 +78,8 @@ pub mod count {
                         }
                     }
                 }
+
+                if in_word { words += 1; };
 
                 (
                     File {
