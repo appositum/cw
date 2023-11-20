@@ -12,7 +12,7 @@ fn main() {
         println!("cw: Input file not specified");
         std::process::exit(1);
     } else if args.len() == 1 {
-        let (file, result) = count::file(&args[0]);
+        let (file, result) = count(&args[0]);
 
         if let Some(e) = result {
             eprintln!("{}", e);
@@ -44,7 +44,7 @@ fn main() {
     let files: Vec<(File, Option<String>)> = args
         .iter()
         .map(|f| {
-            let (file, result) = count::file(&f);
+            let (file, result) = count(&f);
 
             total_newlines += file.newlines;
             total_words += file.words;
