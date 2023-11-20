@@ -3,6 +3,7 @@ pub struct File {
     pub name: String,
     pub newlines: usize,
     pub words: usize,
+    pub chars: usize,
     pub bytes: usize,
 }
 
@@ -37,15 +38,12 @@ pub mod count {
                     name: file_name.to_string(),
                     newlines: 0,
                     words: 0,
+                    chars: 0,
                     bytes: 0,
                 },
                 Some(format!("cw: {}: Is a directory", file_name)),
             );
         }
-
-        let mut newlines = 0;
-        let mut words = 0;
-        let mut bytes = 0;
 
         match fs::read_to_string(file_name) {
             Err(_) => (
@@ -53,26 +51,33 @@ pub mod count {
                     name: file_name.to_string(),
                     newlines: 0,
                     words: 0,
+                    chars: 0,
                     bytes: 0,
                 },
                 Some(format!("cw: {}: No such file or directory", file_name)),
             ),
             Ok(content) => {
+                let mut newlines = 0;
+                let mut words = 0;
+                let mut chars = 0;
+                let mut bytes = 0;
+
                 let mut in_word = false;
 
-                for b in content.bytes() {
-                    bytes += 1;
+                for c in content.chars() {
+                    chars += 1;
+                    bytes += c.len_utf8();
 
-                    if b == b'\n' {
+                    if c == '\n' {
                         newlines += 1;
                     }
 
                     if !in_word {
-                        if !b.is_ascii_whitespace() {
+                        if !c.is_whitespace() {
                             in_word = true;
                         }
                     } else {
-                        if b.is_ascii_whitespace() {
+                        if c.is_whitespace() {
                             in_word = false;
                             words += 1;
                         }
@@ -86,6 +91,7 @@ pub mod count {
                         name: file_name.to_string(),
                         newlines,
                         words,
+                        chars,
                         bytes,
                     },
                     None,
