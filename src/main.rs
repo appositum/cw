@@ -1,53 +1,64 @@
-use cw::{count, File};
-use std::env::args;
+use cw::{self, cli, File};
 
 fn main() {
-    let args: Vec<String> = args().skip(1).collect();
+    let matches = cli::args();
 
-    if args.len() == 0 {
-        // TODO:
-        // - arg parse with `clap`
-        // - read from stdin when file is not specified (ctrl + d should stop stdin read)
+    let mut input_files = matches.get_many::<String>("file").unwrap();
 
-        println!("cw: Input file not specified");
-        std::process::exit(1);
-    } else if args.len() == 1 {
-        let (file, result) = count(&args[0]);
+    if input_files.len() == 1 {
+        let (file, result) = cw::count(&input_files.next().unwrap());
 
         if let Some(e) = result {
             eprintln!("{}", e);
         }
 
         let max_width = if file.bytes > 0 {
+            // `x.ilog10() + 1` == number of digits in `x`
             file.bytes.ilog10() + 1
         } else {
             1
         };
 
-        // `x.ilog10() + 1` == number of digits in `x`
-        println!(
-            "{:>w$} {:>w$} {:>w$} {}",
-            file.newlines,
-            file.words,
-            file.bytes,
-            file.name,
-            w = max_width as usize
-        );
+        if matches.get_flag("lines") {
+            println!("{:?}", matches.get_flag("lines"));
+            println!(
+                "{:>w$} {}",
+                file.newlines,
+                file.name,
+                w = max_width as usize
+            );
+        } else if matches.get_flag("words") {
+            println!("{:>w$} {}", file.words, file.name, w = max_width as usize);
+        } else if matches.get_flag("chars") {
+            println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
+        } else if matches.get_flag("bytes") {
+            println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
+        } else {
+            println!(
+                "{:>w$} {:>w$} {:>w$} {}",
+                file.newlines,
+                file.words,
+                file.bytes,
+                file.name,
+                w = max_width as usize
+            );
+        }
 
         return;
     }
 
     let mut total_newlines = 0;
     let mut total_words = 0;
+    let mut total_chars = 0;
     let mut total_bytes = 0;
 
-    let files: Vec<(File, Option<String>)> = args
-        .iter()
+    let files: Vec<(File, Option<String>)> = input_files
         .map(|f| {
-            let (file, result) = count(&f);
+            let (file, result) = cw::count(&f);
 
             total_newlines += file.newlines;
             total_words += file.words;
+            total_chars += file.chars;
             total_bytes += file.bytes;
 
             (file, result)
@@ -67,21 +78,46 @@ fn main() {
             eprintln!("{}", e);
         }
 
+        if matches.get_flag("lines") {
+            println!(
+                "{:>w$} {}",
+                file.newlines,
+                file.name,
+                w = max_width as usize
+            );
+        } else if matches.get_flag("words") {
+            println!("{:>w$} {}", file.words, file.name, w = max_width as usize);
+        } else if matches.get_flag("chars") {
+            println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
+        } else if matches.get_flag("bytes") {
+            println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
+        } else {
+            println!(
+                "{:>w$} {:>w$} {:>w$} {}",
+                file.newlines,
+                file.words,
+                file.bytes,
+                file.name,
+                w = max_width as usize
+            );
+        }
+    }
+
+    if matches.get_flag("lines") {
+        println!("{:>w$} total", total_newlines, w = max_width as usize);
+    } else if matches.get_flag("words") {
+        println!("{:>w$} total", total_words, w = max_width as usize);
+    } else if matches.get_flag("chars") {
+        println!("{:>w$} total", total_chars, w = max_width as usize);
+    } else if matches.get_flag("bytes") {
+        println!("{:>w$} total", total_bytes, w = max_width as usize);
+    } else {
         println!(
-            "{:>w$} {:>w$} {:>w$} {}",
-            file.newlines,
-            file.words,
-            file.bytes,
-            file.name,
+            "{:>w$} {:>w$} {:>w$} total",
+            total_newlines,
+            total_words,
+            total_bytes,
             w = max_width as usize
         );
     }
-
-    println!(
-        "{:>w$} {:>w$} {:>w$} total",
-        total_newlines,
-        total_words,
-        total_bytes,
-        w = max_width as usize
-    );
 }
