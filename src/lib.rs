@@ -10,6 +10,7 @@ pub struct File {
     pub words: usize,
     pub chars: usize,
     pub bytes: usize,
+    pub max_line_length: usize,
 }
 
 pub fn count(file_name: &String) -> (File, Option<String>) {
@@ -23,6 +24,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                 words: 0,
                 chars: 0,
                 bytes: 0,
+                max_line_length: 0,
             },
             Some(format!("cw: {}: Is a directory", file_name)),
         );
@@ -36,6 +38,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                 words: 0,
                 chars: 0,
                 bytes: 0,
+                max_line_length: 0,
             },
             Some(format!("cw: {}: No such file or directory", file_name)),
         ),
@@ -47,12 +50,24 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
 
             let mut in_word = false;
 
+            let mut max_line_length = 0;
+            let mut max_line_length_tmp = 0;
+
             for c in content.chars() {
+                max_line_length  = if max_line_length_tmp > max_line_length {
+                    max_line_length_tmp
+                } else {
+                    max_line_length
+                };
+
                 chars += 1;
                 bytes += c.len_utf8();
 
                 if c == '\n' {
                     newlines += 1;
+                    max_line_length_tmp = 0;
+                } else {
+                    max_line_length_tmp += 1;
                 }
 
                 if !in_word {
@@ -67,7 +82,9 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                 }
             }
 
-            if in_word { words += 1; };
+            if in_word {
+                words += 1;
+            };
 
             (
                 File {
@@ -76,6 +93,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                     words,
                     chars,
                     bytes,
+                    max_line_length,
                 },
                 None,
             )

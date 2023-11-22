@@ -33,6 +33,8 @@ fn main() {
             println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
         } else if matches.get_flag("bytes") {
             println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
+        } else if matches.get_flag("max-line-length") {
+            println!("{:>w$} {}", file.max_line_length, file.name, w = max_width as usize);
         } else {
             println!(
                 "{:>w$} {:>w$} {:>w$} {}",
@@ -51,10 +53,17 @@ fn main() {
     let mut total_words = 0;
     let mut total_chars = 0;
     let mut total_bytes = 0;
+    let mut max_line_length = 0;
 
     let files: Vec<(File, Option<String>)> = input_files
         .map(|f| {
             let (file, result) = cw::count(&f);
+
+            max_line_length = if file.max_line_length > max_line_length {
+                file.max_line_length
+            } else {
+                    max_line_length
+            };
 
             total_newlines += file.newlines;
             total_words += file.words;
@@ -91,6 +100,8 @@ fn main() {
             println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
         } else if matches.get_flag("bytes") {
             println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
+        } else if matches.get_flag("max-line-length") {
+            println!("{:>w$} {}", file.max_line_length, file.name, w = max_width as usize);
         } else {
             println!(
                 "{:>w$} {:>w$} {:>w$} {}",
@@ -111,6 +122,8 @@ fn main() {
         println!("{:>w$} total", total_chars, w = max_width as usize);
     } else if matches.get_flag("bytes") {
         println!("{:>w$} total", total_bytes, w = max_width as usize);
+    } else if matches.get_flag("max-line-length") {
+        println!("{:>w$} total", max_line_length, w = max_width as usize);
     } else {
         println!(
             "{:>w$} {:>w$} {:>w$} total",
