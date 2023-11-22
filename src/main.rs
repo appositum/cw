@@ -20,7 +20,6 @@ fn main() {
         };
 
         if matches.get_flag("lines") {
-            println!("{:?}", matches.get_flag("lines"));
             println!(
                 "{:>w$} {}",
                 file.newlines,
