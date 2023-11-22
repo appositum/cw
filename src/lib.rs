@@ -54,7 +54,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
             let mut max_line_length_tmp = 0;
 
             for c in content.chars() {
-                max_line_length  = if max_line_length_tmp > max_line_length {
+                max_line_length = if max_line_length_tmp > max_line_length {
                     max_line_length_tmp
                 } else {
                     max_line_length

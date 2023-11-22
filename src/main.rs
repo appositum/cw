@@ -33,7 +33,12 @@ fn main() {
         } else if matches.get_flag("bytes") {
             println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
         } else if matches.get_flag("max-line-length") {
-            println!("{:>w$} {}", file.max_line_length, file.name, w = max_width as usize);
+            println!(
+                "{:>w$} {}",
+                file.max_line_length,
+                file.name,
+                w = max_width as usize
+            );
         } else {
             println!(
                 "{:>w$} {:>w$} {:>w$} {}",
@@ -61,7 +66,7 @@ fn main() {
             max_line_length = if file.max_line_length > max_line_length {
                 file.max_line_length
             } else {
-                    max_line_length
+                max_line_length
             };
 
             total_newlines += file.newlines;
@@ -100,7 +105,12 @@ fn main() {
         } else if matches.get_flag("bytes") {
             println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
         } else if matches.get_flag("max-line-length") {
-            println!("{:>w$} {}", file.max_line_length, file.name, w = max_width as usize);
+            println!(
+                "{:>w$} {}",
+                file.max_line_length,
+                file.name,
+                w = max_width as usize
+            );
         } else {
             println!(
                 "{:>w$} {:>w$} {:>w$} {}",

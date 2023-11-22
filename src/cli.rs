@@ -7,7 +7,6 @@ pub fn args() -> ArgMatches {
         .about("Print newline, word, and byte counts for each file")
         .args(&[
             arg!(<file> ... "Read input from the specified files"),
-
             /* TODO: implement these without `conflicts_with_all`.
             The columns should always be printed in this order:
             `lines | words | chars | bytes | max-line-length`
