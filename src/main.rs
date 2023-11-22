@@ -1,4 +1,4 @@
-use cw::{self, cli, File};
+use cw::{self, cli, File, Error};
 
 fn main() {
     let matches = cli::args();
@@ -8,7 +8,12 @@ fn main() {
     if input_files.len() == 1 {
         let (file, result) = cw::count(&input_files.next().unwrap());
 
-        if let Some(e) = result {
+        if let Some(Error::FileNotFound(e)) = result {
+            eprintln!("{}", e);
+            return;
+        }
+
+        if let Some(Error::IsDirectory(e)) = result {
             eprintln!("{}", e);
         }
 
@@ -59,7 +64,7 @@ fn main() {
     let mut total_bytes = 0;
     let mut max_line_length = 0;
 
-    let files: Vec<(File, Option<String>)> = input_files
+    let files: Vec<(File, Option<Error>)> = input_files
         .map(|f| {
             let (file, result) = cw::count(&f);
 
@@ -87,7 +92,12 @@ fn main() {
     for f in files {
         let (file, result) = f;
 
-        if let Some(e) = result {
+        if let Some(Error::FileNotFound(e)) = result {
+            eprintln!("{}", e);
+            continue;
+        }
+
+        if let Some(Error::IsDirectory(e)) = result {
             eprintln!("{}", e);
         }
 

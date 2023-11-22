@@ -13,7 +13,12 @@ pub struct File {
     pub max_line_length: usize,
 }
 
-pub fn count(file_name: &String) -> (File, Option<String>) {
+pub enum Error {
+    IsDirectory(String),
+    FileNotFound(String),
+}
+
+pub fn count(file_name: &String) -> (File, Option<Error>) {
     let path = Path::new(file_name);
 
     if path.is_dir() {
@@ -26,7 +31,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                 bytes: 0,
                 max_line_length: 0,
             },
-            Some(format!("cw: {}: Is a directory", file_name)),
+            Some(Error::IsDirectory(format!("cw: {}: Is a directory", file_name))),
         );
     }
 
@@ -40,7 +45,7 @@ pub fn count(file_name: &String) -> (File, Option<String>) {
                 bytes: 0,
                 max_line_length: 0,
             },
-            Some(format!("cw: {}: No such file or directory", file_name)),
+            Some(Error::FileNotFound(format!("cw: {}: No such file or directory", file_name))),
         ),
         Ok(content) => {
             let mut newlines = 0;
