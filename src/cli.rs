@@ -2,7 +2,7 @@ use clap::{arg, Command};
 
 pub fn cmd() -> Command {
     Command::new("cw")
-        .version("0.2.1")
+        .version("0.3.0")
         .author("appositum <appositum@pm.me>")
         .about("Print newline, word, and byte counts for each file")
         .args(&[
