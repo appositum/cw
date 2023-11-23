@@ -1,5 +1,6 @@
 pub mod cli;
 
+use clap::ArgAction;
 use std::fs;
 use std::path::Path;
 
@@ -110,4 +111,56 @@ pub fn count(file_name: &String) -> (File, Option<Error>) {
             )
         }
     }
+}
+
+pub fn print(file: File, width: usize) {
+    let matches = cli::cmd().get_matches();
+
+    // grab all arguments that don't take values,
+    // then filter only the ones that were used in the command
+    // simpler way to do this????
+    let no_flags: bool = cli::cmd()
+        .get_arguments()
+        .filter(|arg| {
+            if let ArgAction::SetTrue = arg.get_action() {
+                true
+            } else {
+                false
+            }
+        })
+        .all(|arg| !matches.get_flag(arg.get_id().as_str()));
+
+    if no_flags {
+        println!(
+            "{:>w$} {:>w$} {:>w$} {}",
+            file.newlines,
+            file.words,
+            file.bytes,
+            file.name,
+            w = width as usize
+        );
+    } else {
+        if matches.get_flag("lines") {
+            print!("{:>w$} ", file.newlines, w = width as usize);
+        }
+
+        if matches.get_flag("words") {
+            print!("{:>w$} ", file.words, w = width as usize);
+        }
+
+        if matches.get_flag("chars") {
+            print!("{:>w$} ", file.chars, w = width as usize);
+        }
+
+        if matches.get_flag("bytes") {
+            print!("{:>w$} ", file.bytes, w = width as usize);
+        }
+
+        if matches.get_flag("max-line-length") {
+            print!("{:>w$} ", file.max_line_length, w = width as usize);
+        }
+
+        println!("{}", file.name);
+    }
+
 }

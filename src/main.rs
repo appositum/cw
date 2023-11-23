@@ -1,7 +1,7 @@
 use cw::{self, cli, Error, File};
 
 fn main() {
-    let matches = cli::args();
+    let matches = cli::cmd().get_matches();
 
     let mut input_files = matches.get_many::<String>("file").unwrap();
 
@@ -24,37 +24,7 @@ fn main() {
             1
         };
 
-        if matches.get_flag("lines") {
-            println!(
-                "{:>w$} {}",
-                file.newlines,
-                file.name,
-                w = max_width as usize
-            );
-        } else if matches.get_flag("words") {
-            println!("{:>w$} {}", file.words, file.name, w = max_width as usize);
-        } else if matches.get_flag("chars") {
-            println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
-        } else if matches.get_flag("bytes") {
-            println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
-        } else if matches.get_flag("max-line-length") {
-            println!(
-                "{:>w$} {}",
-                file.max_line_length,
-                file.name,
-                w = max_width as usize
-            );
-        } else {
-            println!(
-                "{:>w$} {:>w$} {:>w$} {}",
-                file.newlines,
-                file.words,
-                file.bytes,
-                file.name,
-                w = max_width as usize
-            );
-        }
-
+        cw::print(file, max_width as usize);
         return;
     }
 
@@ -101,55 +71,17 @@ fn main() {
             eprintln!("{}", e);
         }
 
-        if matches.get_flag("lines") {
-            println!(
-                "{:>w$} {}",
-                file.newlines,
-                file.name,
-                w = max_width as usize
-            );
-        } else if matches.get_flag("words") {
-            println!("{:>w$} {}", file.words, file.name, w = max_width as usize);
-        } else if matches.get_flag("chars") {
-            println!("{:>w$} {}", file.chars, file.name, w = max_width as usize);
-        } else if matches.get_flag("bytes") {
-            println!("{:>w$} {}", file.bytes, file.name, w = max_width as usize);
-        } else if matches.get_flag("max-line-length") {
-            println!(
-                "{:>w$} {}",
-                file.max_line_length,
-                file.name,
-                w = max_width as usize
-            );
-        } else {
-            println!(
-                "{:>w$} {:>w$} {:>w$} {}",
-                file.newlines,
-                file.words,
-                file.bytes,
-                file.name,
-                w = max_width as usize
-            );
-        }
+        cw::print(file, max_width as usize);
     }
 
-    if matches.get_flag("lines") {
-        println!("{:>w$} total", total_newlines, w = max_width as usize);
-    } else if matches.get_flag("words") {
-        println!("{:>w$} total", total_words, w = max_width as usize);
-    } else if matches.get_flag("chars") {
-        println!("{:>w$} total", total_chars, w = max_width as usize);
-    } else if matches.get_flag("bytes") {
-        println!("{:>w$} total", total_bytes, w = max_width as usize);
-    } else if matches.get_flag("max-line-length") {
-        println!("{:>w$} total", max_line_length, w = max_width as usize);
-    } else {
-        println!(
-            "{:>w$} {:>w$} {:>w$} total",
-            total_newlines,
-            total_words,
-            total_bytes,
-            w = max_width as usize
-        );
-    }
+    let total = File {
+        name: "total".to_string(),
+        newlines: total_newlines,
+        words: total_words,
+        chars: total_chars,
+        bytes: total_bytes,
+        max_line_length,
+    };
+
+    cw::print(total, max_width as usize);
 }
