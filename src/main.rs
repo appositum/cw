@@ -1,4 +1,4 @@
-use cw::{self, cli, File, Error};
+use cw::{self, cli, Error, File};
 
 fn main() {
     let matches = cli::args();

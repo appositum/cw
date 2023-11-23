@@ -31,7 +31,10 @@ pub fn count(file_name: &String) -> (File, Option<Error>) {
                 bytes: 0,
                 max_line_length: 0,
             },
-            Some(Error::IsDirectory(format!("cw: {}: Is a directory", file_name))),
+            Some(Error::IsDirectory(format!(
+                "cw: {}: Is a directory",
+                file_name
+            ))),
         );
     }
 
@@ -45,7 +48,10 @@ pub fn count(file_name: &String) -> (File, Option<Error>) {
                 bytes: 0,
                 max_line_length: 0,
             },
-            Some(Error::FileNotFound(format!("cw: {}: No such file or directory", file_name))),
+            Some(Error::FileNotFound(format!(
+                "cw: {}: No such file or directory",
+                file_name
+            ))),
         ),
         Ok(content) => {
             let mut newlines = 0;
