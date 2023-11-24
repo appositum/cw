@@ -6,7 +6,7 @@ fn main() {
     let mut input_files = matches.get_many::<String>("file").unwrap();
 
     if input_files.len() == 1 {
-        let (file, result) = cw::count(&input_files.next().unwrap());
+        let (file, result) = cw::parse_file(&input_files.next().unwrap());
 
         if let Some(Error::FileNotFound(e)) = result {
             eprintln!("{}", e);
@@ -36,7 +36,7 @@ fn main() {
 
     let files: Vec<(File, Option<Error>)> = input_files
         .map(|f| {
-            let (file, result) = cw::count(&f);
+            let (file, result) = cw::parse_file(&f);
 
             max_line_length = if file.max_line_length > max_line_length {
                 file.max_line_length
