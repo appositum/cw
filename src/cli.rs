@@ -6,7 +6,7 @@ pub fn cmd() -> Command {
         .author("appositum <appositum@pm.me>")
         .about("Print newline, word, and byte counts for each file")
         .args(&[
-            arg!(<file> ... "Read input from the specified files"),
+            arg!([file] ... "Read input from the specified files"),
             arg!(-l --lines "Print the line count"),
             arg!(-w --words "Print the word count"),
             arg!(-c --chars "Print the character count"),
