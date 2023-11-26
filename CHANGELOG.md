@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Removed
 
+## [1.0.0] - 2023-11-24
+### Added
+- Read from stdin if no file arguments are passed
+
 ## [0.3.0] - 2023-11-23
 ### Added
 - Multiple flags at once, eg.: `cw file.txt --words --chars -L`
@@ -41,7 +45,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Project upload
 
-### [Unreleased](https://github.com/appositum/cw/compare/0.3.0...dev)
+### [Unreleased](https://github.com/appositum/cw/compare/1.0.0...dev)
+### [1.0.0](https://github.com/appositum/cw/releases/tag/1.0.0)
 ### [0.3.0](https://github.com/appositum/cw/releases/tag/0.3.0)
 ### [0.2.1](https://github.com/appositum/cw/releases/tag/0.2.1)
 ### [0.2.0](https://github.com/appositum/cw/releases/tag/0.2.0)
